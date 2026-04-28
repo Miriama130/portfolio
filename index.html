@@ -72,76 +72,59 @@
 <div id="app"></div>
 
 <script>
-    // Textes dynamiques avec leurs traductions (français/anglais gardé)
-    const welcomeTranslations = [
-        "Bienvenue sur mon portfolio professionnel",
-        "Welcome to my professional portfolio",
-        "مرحباً بكم في محفظتي المهنية",
-        "Bienvenido a mi portafolio profesional"
-    ];
+    // Textes dynamiques en français uniquement
+    const welcomeText = "Bienvenue sur mon portfolio professionnel";
+    const greetingText = "Bonjour, je suis";
     
-    const greetingTranslations = [
-        "Bonjour, je suis",
-        "Hello, I am",
-        "مرحباً، أنا",
-        "Hola, soy"
-    ];
-    
-    // Fonction d'effet machine à écrire
-    function typeWriter(element, texts, index = 0, charIndex = 0, isDeleting = false) {
+    // Effet machine à écrire simple
+    function typeWriterSimple(element, text, index = 0) {
         if (!element) return;
-        
-        const currentText = texts[index % texts.length];
-        const typingSpeed = 100;
-        const deletingSpeed = 50;
-        const pauseBetween = 2000;
-        
-        if (isDeleting) {
-            element.textContent = currentText.substring(0, charIndex - 1);
-            charIndex--;
+        if (index < text.length) {
+            element.textContent += text.charAt(index);
+            setTimeout(() => typeWriterSimple(element, text, index + 1), 80);
         } else {
-            element.textContent = currentText.substring(0, charIndex + 1);
-            charIndex++;
-        }
-        
-        if (!isDeleting && charIndex === currentText.length) {
-            setTimeout(() => {
-                typeWriter(element, texts, index, charIndex, true);
-            }, pauseBetween);
-        } else if (isDeleting && charIndex === 0) {
-            setTimeout(() => {
-                typeWriter(element, texts, index + 1, 0, false);
-            }, typingSpeed);
-        } else {
-            const speed = isDeleting ? deletingSpeed : typingSpeed;
-            setTimeout(() => {
-                typeWriter(element, texts, index, charIndex, isDeleting);
-            }, speed);
+            element.style.borderRight = "3px solid #6c9eff";
         }
     }
     
-    // Données portfolio enrichies avec NOUVEAU PROJET microservices complet : config server, discovery, gateway, database, notification, .NET + Spring
     const portfolioData = {
         name: "Mariem Tlili",
         title: "Ingénieure en Informatique & Expert Cyber Sécurité",
         projects: [
+            // 1. Projet Microservices Spring Cloud (pur)
             {
-                icon: "fas fa-cloud-upload-alt",
-                title: "Microservices Hybrides .NET & Spring Cloud",
-                description: "Architecture microservices complète intégrant Spring Cloud (Config Server, Discovery Eureka, Gateway, Notification asynchrone) et modules .NET 8 (ApplicationCore, Infrastructure, UI Console, UI Web). Configuration centralisée via Config Server, découverte dynamique, routage intelligent avec Resilience4j, notifications temps réel Kafka/RabbitMQ, persistance polyglotte (SQL Server, PostgreSQL, MongoDB). Projet industriel déployé sur Docker & Kubernetes.",
+                icon: "fab fa-java",
+                title: "Microservices Spring Cloud",
+                description: "Architecture complète de microservices avec Spring Boot, Spring Cloud Config Server, Eureka Discovery, API Gateway (Spring Cloud Gateway), Resilience4j, Kafka asynchrone, Zipkin pour la traçabilité. Centralisation des configurations, équilibrage de charge, circuit breaker et monitoring.",
                 microservices: [
-                    "Spring Cloud Config Server — Gestion centralisée des configurations (Git, refresh dynamique)",
-                    "Eureka Discovery Service — Registry & load balancing inter-services",
-                    "API Gateway Spring Cloud Gateway — Routing, sécurité, rate limiting, circuit breaker",
-                    "Notification Service (Kafka + Mail/SMS) — Alertes et emailing asynchrone",
-                    "am.applicationcore (.NET) — Domain, Business rules, DDD",
-                    "am.infrastructure (.NET) — EF Core, repositories, patterns, migrations",
-                    "am.ui.console — Interface CLI d’administration / scripts",
-                    "am.ui.web — Dashboard ASP.NET Core MVC intégré avec les APIs Spring"
+                    "Config Server (Git) — Configuration externalisée",
+                    "Eureka Discovery — Registry et load balancing",
+                    "API Gateway — Routage, sécurité, rate limiting",
+                    "Resilience4j — Circuit Breaker, retry, time limiter",
+                    "Service Notification (Kafka) — Messagerie asynchrone",
+                    "Zipkin — Distributed tracing",
+                    "Prometheus + Grafana — Monitoring"
                 ],
-                tags: ["Config Server", "Eureka Discovery", "Spring Gateway", "Kafka", ".NET 8", "EF Core", "PostgreSQL", "MongoDB", "SQL Server", "Docker", "Resilience4j"],
-                github: "https://github.com/Miriama130/microservices-hybrid-net-spring"
+                tags: ["Spring Boot", "Spring Cloud", "Eureka", "Config Server", "Gateway", "Resilience4j", "Kafka", "Zipkin", "Docker"],
+                github: "https://github.com/Miriama130/microservices-spring-cloud"
             },
+            // 2. Projet Full-Stack Spring Boot + Angular + .NET
+            {
+                icon: "fab fa-angular",
+                title: "Full-Stack Spring Boot + Angular + .NET",
+                description: "Application d'entreprise combinant un backend Spring Boot (REST API), un frontend moderne Angular 18 et des microservices annexes en .NET 8. Gestion des utilisateurs, authentification JWT, persistance polyglotte (SQL Server, PostgreSQL, MongoDB).",
+                microservices: [
+                    "Spring Boot — API REST, sécurité JWT, Spring Data JPA",
+                    "Angular 18 — Dashboard, matériel design, RxJS, état NgRx",
+                    ".NET 8 — Microservices métier (am.infrastructure, am.applicationcore)",
+                    "Communication synchrone (HTTP/REST) et asynchrone (Kafka)",
+                    "Base de données : SQL Server, PostgreSQL, MongoDB",
+                    "Déploiement Docker Compose / Kubernetes"
+                ],
+                tags: ["Spring Boot", "Angular 18", ".NET 8", "JWT", "PostgreSQL", "MongoDB", "Docker", "Kubernetes"],
+                github: "https://github.com/Miriama130/fullstack-spring-angular-dotnet"
+            },
+            // 3. Pipeline DevOps Complet
             {
                 icon: "fab fa-devops",
                 title: "Pipeline DevOps Complet",
@@ -149,14 +132,7 @@
                 tags: ["Jenkins", "Dockerfile", "K8s/EKS", "Terraform", "Prometheus", "Grafana", "Nessus Scan", "Mail Notif"],
                 github: "https://github.com/Miriama130"
             },
-            {
-                icon: "fab fa-java",
-                title: "Architecture Microservices (Spring Cloud)",
-                description: "Spring Cloud Gateway, Eureka Discovery, Config Server, Resilience4j, Kafka, Zipkin. Mise en place d’un écosystème resilient et scalable.",
-                microservices: ["Service Auth (JWT)", "Service Commandes (PostgreSQL)", "Service Paiement (MongoDB)", "Service Notification (Kafka)", "API Gateway + Resilience4j"],
-                tags: ["Spring Boot", "Kafka", "Resilience4j", "Eureka", "Config Server"],
-                github: "https://github.com/Miriama130"
-            },
+            // 4. PFE Nessus & GLPI
             {
                 icon: "fas fa-shield-virus",
                 title: "PFE : Nessus Scan & GLPI Security",
@@ -164,6 +140,7 @@
                 tags: ["Node.js", "React", "MongoDB", "Nessus API", "GLPI", "Socket.io"],
                 github: "https://github.com/Miriama130"
             },
+            // 5. Skill Swapp
             {
                 icon: "fas fa-code-branch",
                 title: "Skill Swapp - Plateforme innovante",
@@ -171,6 +148,7 @@
                 tags: ["React/Spring Boot", "IA Quiz Gen", "WebRTC", "Chatbot", "Mailgun"],
                 github: "https://github.com/Miriama130"
             },
+            // 6. Node.js Enterprise API
             {
                 icon: "fab fa-node-js",
                 title: "Node.js Enterprise API",
@@ -178,6 +156,7 @@
                 tags: ["Express", "MongoDB/Mongoose", "JWT", "Redis", "Swagger"],
                 github: "https://github.com/Miriama130"
             },
+            // 7. Dashboard React
             {
                 icon: "fab fa-react",
                 title: "Dashboard React / Tailwind",
@@ -185,6 +164,7 @@
                 tags: ["React 18", "TailwindCSS", "Redux Toolkit", "Vite"],
                 github: "https://github.com/Miriama130"
             },
+            // 8. Django E-Commerce
             {
                 icon: "fab fa-python",
                 title: "Django E-Commerce",
@@ -192,6 +172,7 @@
                 tags: ["Django", "DRF", "Stripe", "PostgreSQL"],
                 github: "https://github.com/Miriama130"
             },
+            // 9. Web Sémantique
             {
                 icon: "fas fa-project-diagram",
                 title: "Web Sémantique & SPARQL",
@@ -199,13 +180,7 @@
                 tags: ["RDF/OWL", "SPARQL", "Flask", "GraphDB"],
                 github: "https://github.com/Miriama130"
             },
-            {
-                icon: "fas fa-graphql",
-                title: "GraphQL API Gateway",
-                description: "Apollo Server, fédération de microservices, subscriptions en temps réel.",
-                tags: ["GraphQL", "Apollo", "Node.js", "MongoDB"],
-                github: "https://github.com/Miriama130"
-            },
+            // 10. ML Détection d'anomalies
             {
                 icon: "fas fa-brain",
                 title: "ML - Détection Anomalies Réseau",
@@ -246,7 +221,6 @@
     function renderPortfolio() {
         const app = document.getElementById('app');
         const projectsHTML = portfolioData.projects.map(project => {
-            // gestion microservices list optional
             const microList = project.microservices ? `
                 <ul class="microservice-list">
                     ${project.microservices.map(ms => `<li>${ms}</li>`).join('')}
@@ -353,7 +327,7 @@
             </main>
             
             <footer>
-                <p>© 2026 ${portfolioData.name} — Ingénieure Informatique | DevOps | Cyber Expert | Microservices .NET + Spring</p>
+                <p>© 2026 ${portfolioData.name} — Ingénieure Informatique | DevOps | Cyber Expert | Spring Cloud · Angular · .NET</p>
             </footer>
         `;
         
@@ -388,11 +362,12 @@
         const greetingElement = document.querySelector('.dynamic-greeting');
         
         if (logoElement) {
-            typeWriter(logoElement, welcomeTranslations, 0, 0, false);
+            logoElement.textContent = "";
+            typeWriterSimple(logoElement, welcomeText);
         }
-        
         if (greetingElement) {
-            typeWriter(greetingElement, greetingTranslations, 0, 0, false);
+            greetingElement.textContent = "";
+            typeWriterSimple(greetingElement, greetingText);
         }
     }
     
