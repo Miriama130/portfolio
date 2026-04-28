@@ -19,7 +19,6 @@
         .nav-links a:hover { color: #6c9eff; }
         .hero { min-height: 85vh; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 2rem; padding: 2rem 0 3rem; }
         .hero-content { flex: 1; }
-        .hero-content .greeting { font-size: 1rem; text-transform: uppercase; letter-spacing: 3px; color: #6c9eff; margin-bottom: 1rem; }
         .hero-content h1 { font-size: 4rem; font-weight: 700; line-height: 1.1; margin-bottom: 0.5rem; }
         .hero-content h1 span { background: linear-gradient(120deg, #ffffff, #91b6ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .hero-content .title { font-size: 1.7rem; font-weight: 500; color: #b9d0ff; margin-bottom: 1.2rem; }
@@ -54,9 +53,29 @@
         @media (max-width: 800px) { .hero-content h1 { font-size: 2.5rem; } .projects-grid { grid-template-columns: 1fr; } .cursor, .cursor-dot { display: none; } body { cursor: auto; } a, button, .btn { cursor: pointer; } }
         .toast { position: fixed; bottom: 20px; right: 20px; background: #1e3a8a; color: white; padding: 12px 24px; border-radius: 40px; z-index: 10000; animation: slideIn 0.3s ease; }
         @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        .share-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        .share-btn { background: rgba(108, 158, 255, 0.2); border: 1px solid #6c9eff; padding: 8px 16px; border-radius: 30px; cursor: pointer; transition: 0.2s; }
+        .share-buttons { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+        .share-btn { background: rgba(108, 158, 255, 0.2); border: 1px solid #6c9eff; padding: 8px 16px; border-radius: 30px; cursor: pointer; transition: 0.2s; color: #eef5ff; }
         .share-btn:hover { background: #6c9eff; color: #0a0f1a; }
+        .contact-link { color: #aac3ff; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+        .contact-link:hover { color: #6c9eff; transform: translateX(3px); }
+        
+        /* Styles pour l'effet machine à écrire */
+        .typewriter-text {
+            display: inline-block;
+            border-right: 3px solid #6c9eff;
+            white-space: nowrap;
+            overflow: hidden;
+            animation: blinkCursor 0.75s step-end infinite;
+        }
+        
+        @keyframes blinkCursor {
+            0%, 100% { border-color: #6c9eff; }
+            50% { border-color: transparent; }
+        }
+        
+        .typewriter-container {
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -67,7 +86,68 @@
 <div id="app"></div>
 
 <script>
-    // Données du portfolio
+    // Textes dynamiques avec leurs traductions
+    const welcomeTranslations = [
+        "Bienvenue sur mon portfolio professionnel",
+        "Welcome to my professional portfolio",
+        "مرحباً بكم في محفظتي المهنية",
+        "Bienvenido a mi portafolio profesional"
+    ];
+    
+    const greetingTranslations = [
+        "Bonjour, je suis",
+        "Hello, I am",
+        "مرحباً، أنا",
+        "Hola, soy"
+    ];
+    
+    // Fonction d'effet machine à écrire
+    function typeWriter(element, texts, index = 0, charIndex = 0, isDeleting = false) {
+        if (!element) return;
+        
+        const currentText = texts[index % texts.length];
+        const typingSpeed = 100;
+        const deletingSpeed = 50;
+        const pauseBetween = 2000;
+        
+        if (isDeleting) {
+            element.textContent = currentText.substring(0, charIndex - 1);
+            charIndex--;
+        } else {
+            element.textContent = currentText.substring(0, charIndex + 1);
+            charIndex++;
+        }
+        
+        if (!isDeleting && charIndex === currentText.length) {
+            setTimeout(() => {
+                typeWriter(element, texts, index, charIndex, true);
+            }, pauseBetween);
+        } else if (isDeleting && charIndex === 0) {
+            setTimeout(() => {
+                typeWriter(element, texts, index + 1, 0, false);
+            }, typingSpeed);
+        } else {
+            const speed = isDeleting ? deletingSpeed : typingSpeed;
+            setTimeout(() => {
+                typeWriter(element, texts, index, charIndex, isDeleting);
+            }, speed);
+        }
+    }
+    
+    // Démarrage des animations
+    function startDynamicTexts() {
+        const logoElement = document.querySelector('.dynamic-logo');
+        const greetingElement = document.querySelector('.dynamic-greeting');
+        
+        if (logoElement) {
+            typeWriter(logoElement, welcomeTranslations, 0, 0, false);
+        }
+        
+        if (greetingElement) {
+            typeWriter(greetingElement, greetingTranslations, 0, 0, false);
+        }
+    }
+    
     const portfolioData = {
         name: "Mariem Tlili",
         title: "Ingénieure en Informatique & Expert Cyber Sécurité",
@@ -77,7 +157,7 @@
                 title: "Pipeline DevOps Complet",
                 description: "CI/CD complet avec Jenkins, Docker, Kubernetes (EKS), Terraform, Prometheus & Grafana. Intégration de scans Nessus dans le pipeline, envoi d'emails de notification, build image Docker sécurisée.",
                 tags: ["Jenkins", "Dockerfile", "K8s/EKS", "Terraform", "Prometheus", "Grafana", "Nessus Scan", "Mail Notif"],
-                github: "https://github.com/mariemtlili/devops-pipeline"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fab fa-java",
@@ -85,79 +165,79 @@
                 description: "Spring Cloud Gateway, Eureka Discovery, Config Server, Resilience4j, Kafka, Zipkin.",
                 microservices: ["Service Auth (JWT)", "Service Commandes (PostgreSQL)", "Service Paiement (MongoDB)", "Service Notification (Kafka)", "API Gateway + Resilience4j"],
                 tags: ["Spring Boot", "Kafka", "Resilience4j", "Eureka"],
-                github: "https://github.com/mariemtlili/microservices-spring"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fas fa-shield-virus",
                 title: "PFE : Nessus Scan & GLPI Security",
                 description: "Application full-stack (Node.js/Express + React + MongoDB) pour centraliser vulnérabilités Nessus, synchronisation GLPI, génération rapports PDF.",
                 tags: ["Node.js", "React", "MongoDB", "Nessus API", "GLPI", "Socket.io"],
-                github: "https://github.com/mariemtlili/nessus-glpi"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fas fa-code-branch",
                 title: "Skill Swapp - Plateforme innovante",
                 description: "Génération automatique de quiz par IA, système de recommandation, appel vidéo (WebRTC), messagerie instantanée, chatbot intelligent, mailing automatique.",
                 tags: ["React/Spring Boot", "IA Quiz Gen", "WebRTC", "Chatbot", "Mailgun"],
-                github: "https://github.com/mariemtlili/skill-swapp"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fab fa-node-js",
                 title: "Node.js Enterprise API",
                 description: "API REST complète avec authentification JWT, CRUD avancé, upload fichiers, pagination, rate limiting, logging Winston, Docker.",
                 tags: ["Express", "MongoDB/Mongoose", "JWT", "Redis", "Swagger"],
-                github: "https://github.com/mariemtlili/nodejs-enterprise-api"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fab fa-react",
                 title: "Dashboard React / Tailwind",
                 description: "Application SPA avec thème sombre, graphiques Recharts, authentification, Redux Toolkit, routes protégées.",
                 tags: ["React 18", "TailwindCSS", "Redux Toolkit", "Vite"],
-                github: "https://github.com/mariemtlili/react-dashboard"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fab fa-python",
                 title: "Django E-Commerce",
                 description: "Plateforme e-commerce complète avec panier, Stripe, REST API (DRF), PostgreSQL, AWS EC2.",
                 tags: ["Django", "DRF", "Stripe", "PostgreSQL"],
-                github: "https://github.com/mariemtlili/django-ecommerce"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fas fa-project-diagram",
                 title: "Web Sémantique & SPARQL",
                 description: "Ontologie RDF, requêtes SPARQL, application Flask pour DBpedia, GraphDB.",
                 tags: ["RDF/OWL", "SPARQL", "Flask", "GraphDB"],
-                github: "https://github.com/mariemtlili/semantic-web"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fas fa-graphql",
                 title: "GraphQL API Gateway",
                 description: "Apollo Server, fédération de microservices, subscriptions en temps réel.",
                 tags: ["GraphQL", "Apollo", "Node.js", "MongoDB"],
-                github: "https://github.com/mariemtlili/graphql-gateway"
+                github: "https://github.com/Miriama130"
             },
             {
                 icon: "fas fa-brain",
                 title: "ML - Détection Anomalies Réseau",
                 description: "Modèles LSTM / Isolation Forest pour cybersécurité, FastAPI, Streamlit.",
                 tags: ["TensorFlow", "Scikit-learn", "FastAPI"],
-                github: "https://github.com/mariemtlili/ml-security"
+                github: "https://github.com/Miriama130"
             }
         ],
         skills: {
-            dev: ["Java/Spring Boot", "Angular", "React", "Node.js", "Django", "Tailwind", "GraphQL", "SPARQL/RDF"],
-            devops: ["Docker/K8s", "Jenkins", "Terraform", "AWS Certified", "Prometheus/Grafana"],
-            cyber: ["Nessus/OpenVAS", "GLPI", "Blockchain", "ISO 27001", "SIEM"],
-            certs: ["AWS Solutions Architect", "Blockchain Certified (Hyperledger)", "CKA (Kubernetes)", "Nessus Certified"]
+            dev: ["Java/Spring Boot", "Angular", "React", "Node.js", "Django", "Tailwind", "GraphQL", "SPARQL/RDF", "PHP/Laravel", "C#/.NET"],
+            devops: ["Docker/K8s", "Jenkins", "Terraform", "AWS", "Azure", "Prometheus/Grafana", "Git/GitHub Actions"],
+            cyber: ["Nessus/OpenVAS", "GLPI", "Kali Linux", "Wireshark", "Nmap", "ISO 27001"],
+            certs: ["AWS Solutions Architect", "Kubernetes (CKA)", "Nessus Certified", "Certification Cybersécurité"]
         },
         formation: [
-            { title: "🎓 Ingénieur Informatique - ENSI", desc: "2021-2024 | Spécialité Cybersécurité & Cloud, Mention Très Bien" },
-            { title: "📜 Blockchain & Smart Contracts", desc: "Certification professionnelle - Ethereum / Hyperledger Fabric" },
-            { title: "🤖 AWS re/Start & Cloud Architect", desc: "Certification AWS Solutions Architect - Déploiements cloud haute disponibilité" }
+            { title: "🎓 Ingénieur Informatique - ESPRIT", desc: "2024 - 2026 | Spécialité Technologies du Web et de l'Internet (Twin)" },
+            { title: "🛡️ Master en Cybersécurité et Sciences de l'Informatique", desc: "2023 - 2025 | ISLARIANA (Ariana) - Cybersécurité offensive/défensive" },
+            { title: "📘 Licence en Génie Logiciel et Sciences de l'Informatique", desc: "2020 - 2023 | ISTIC Borj Cedria - Spécialité Génie Logiciel" },
+            { title: "🎓 Baccalauréat Technique", desc: "2019 - 2020" }
         ]
     };
-
-    // Fonction pour afficher un toast
+    
     function showToast(message) {
         const toast = document.createElement('div');
         toast.className = 'toast';
@@ -165,20 +245,16 @@
         document.body.appendChild(toast);
         setTimeout(() => toast.remove(), 3000);
     }
-
-    // Fonction pour copier le lien
+    
     function copyShareLink() {
         const url = window.location.href;
         navigator.clipboard.writeText(url).then(() => {
             showToast('✅ Lien copié ! Partagez-le avec vos amis');
         });
     }
-
-    // Génération du HTML
+    
     function renderPortfolio() {
         const app = document.getElementById('app');
-        
-        // Génération des projets
         const projectsHTML = portfolioData.projects.map(project => `
             <div class="project-card">
                 <div class="project-icon"><i class="${project.icon}"></i></div>
@@ -189,25 +265,23 @@
                 <a href="${project.github}" target="_blank" class="github-link"><i class="fab fa-github"></i> Voir sur GitHub →</a>
             </div>
         `).join('');
-
-        // Génération des compétences
+        
         const skillsHTML = `
             <div class="skills-category"><h3><i class="fas fa-laptop-code"></i> Dev & Frameworks</h3>${portfolioData.skills.dev.map(s => `<span class="skill-badge">${s}</span>`).join('')}</div>
             <div class="skills-category"><h3><i class="fas fa-cloud"></i> DevOps & Cloud</h3>${portfolioData.skills.devops.map(s => `<span class="skill-badge">${s}</span>`).join('')}</div>
             <div class="skills-category"><h3><i class="fas fa-shield-alt"></i> CyberSécurité</h3>${portfolioData.skills.cyber.map(s => `<span class="skill-badge">${s}</span>`).join('')}</div>
             <div class="skills-category"><h3><i class="fas fa-certificate"></i> Certifications</h3>${portfolioData.skills.certs.map(s => `<span class="skill-badge">${s}</span>`).join('')}</div>
         `;
-
-        // Génération formation
+        
         const formationHTML = portfolioData.formation.map(f => `
             <div class="timeline-item"><h4>${f.title}</h4><p>${f.desc}</p></div>
         `).join('');
-
+        
         app.innerHTML = `
             <header>
                 <div class="container">
                     <nav>
-                        <div class="logo">M.TLILI</div>
+                        <div class="logo dynamic-logo" style="min-width: 380px;"></div>
                         <ul class="nav-links">
                             <li><a href="#accueil">Accueil</a></li>
                             <li><a href="#projets">Projets</a></li>
@@ -218,22 +292,22 @@
                     </nav>
                 </div>
             </header>
-
+            
             <main>
                 <section id="accueil">
                     <div class="container hero">
                         <div class="hero-content">
-                            <div class="greeting">⚡ CYBER & FULL-STACK ENGINEER</div>
-                            <h1>Bonjour, je suis <br><span>${portfolioData.name}</span></h1>
+                            <h1>
+                                <div class="typewriter-container dynamic-greeting" style="font-size: inherit;"></div>
+                                <br><span>${portfolioData.name}</span>
+                            </h1>
                             <div class="title">${portfolioData.title}</div>
                             <div class="btn-group">
                                 <a href="#projets" class="btn btn-primary">Voir mes projets →</a>
-                                <button id="downloadCvBtn" class="btn btn-outline"><i class="fas fa-download"></i> Télécharger CV</button>
                                 <button id="shareBtn" class="btn btn-outline"><i class="fas fa-share-alt"></i> Partager</button>
                             </div>
                             <div class="share-buttons">
-                                <button onclick="window.open('https://wa.me/?text=Découvrez%20mon%20portfolio%20!%20' + window.location.href)" class="share-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-                                <button onclick="window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + window.location.href)" class="share-btn"><i class="fab fa-linkedin"></i> LinkedIn</button>
+                                <button onclick="window.open('https://wa.me/21652150980?text=D%C3%A9couvrez%20mon%20portfolio%20!%20' + window.location.href)" class="share-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
                                 <button onclick="copyShareLink()" class="share-btn"><i class="fas fa-link"></i> Copier lien</button>
                             </div>
                         </div>
@@ -244,76 +318,74 @@
                         </div>
                     </div>
                 </section>
-
+                
                 <section id="projets" style="background: rgba(0, 0, 0, 0.2);">
                     <div class="container">
                         <h2 class="section-title">Projets phares</h2>
                         <div class="projects-grid">${projectsHTML}</div>
                     </div>
                 </section>
-
+                
                 <section id="competences">
                     <div class="container">
                         <h2 class="section-title">Compétences & Certifications</h2>
                         <div class="skills-wrapper">${skillsHTML}</div>
                     </div>
                 </section>
-
+                
                 <section id="formation" style="background: rgba(0, 0, 0, 0.2);">
                     <div class="container">
                         <h2 class="section-title">Formation</h2>
                         <div class="timeline">${formationHTML}</div>
                     </div>
                 </section>
-
+                
                 <section id="contact">
                     <div class="container">
                         <h2 class="section-title">Contact & Réseaux</h2>
                         <div style="display: flex; gap: 2rem; flex-wrap: wrap; justify-content: space-between; align-items: center;">
                             <div style="display: flex; gap: 2rem; flex-wrap: wrap;">
-                                <a href="https://github.com/mariemtlili" target="_blank" style="color:#aac3ff; text-decoration: none;"><i class="fab fa-github"></i> github/mariemtlili</a>
-                                <a href="#" style="color:#aac3ff; text-decoration: none;"><i class="fab fa-linkedin"></i> linkedin/in/mariem-tlili</a>
-                                <a href="mailto:mariem.tlili@cybersec.tn" style="color:#aac3ff; text-decoration: none;"><i class="fas fa-envelope"></i> mariem.tlili@cybersec.tn</a>
+                                <a href="https://github.com/Miriama130" target="_blank" class="contact-link"><i class="fab fa-github"></i> github.com/Miriama130</a>
+                                <a href="https://wa.me/21652150980" target="_blank" class="contact-link"><i class="fab fa-whatsapp"></i> WhatsApp : 52 150 980</a>
+                                <a href="mailto:mariemtlili1999@gmail.com" class="contact-link"><i class="fas fa-envelope"></i> mariemtlili1999@gmail.com</a>
                             </div>
-                            <div><i class="fas fa-map-marker-alt"></i> Tunis, Tunisie</div>
+                            <div><i class="fas fa-map-marker-alt"></i> Borj Cedria, Tunisie | Permis B</div>
                         </div>
                     </div>
                 </section>
             </main>
-
+            
             <footer>
                 <p>© 2026 ${portfolioData.name} — Ingénieure Informatique | DevOps | Cyber Expert | Tous droits réservés</p>
             </footer>
         `;
-
-        // Attacher les événements après le rendu
+        
         attachEvents();
+        startDynamicTexts();
     }
-
+    
     function attachEvents() {
-        // Smooth scroll
         document.querySelectorAll('.nav-links a, .btn-primary').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 const targetId = this.getAttribute('href');
                 if(targetId && targetId.startsWith('#')) {
                     e.preventDefault();
-                    document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth' });
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
                 }
             });
         });
-
-        // Téléchargement CV
-        document.getElementById('downloadCvBtn')?.addEventListener('click', () => {
-            showToast('📄 Téléchargement CV - Mariem Tlili : Ingénieure Informatique, Expert Cyber, DevOps, certifiée AWS & Blockchain.');
-        });
-
-        // Bouton partager
-        document.getElementById('shareBtn')?.addEventListener('click', () => {
-            copyShareLink();
-        });
+        
+        const shareBtn = document.getElementById('shareBtn');
+        if(shareBtn) {
+            shareBtn.addEventListener('click', () => {
+                copyShareLink();
+            });
+        }
     }
-
-    // Curseur personnalisé
+    
     function initCursor() {
         const cursor = document.querySelector('.cursor');
         const cursorDot = document.querySelector('.cursor-dot');
@@ -328,17 +400,18 @@
             hoverElements.forEach(el => {
                 el.addEventListener('mouseenter', () => {
                     cursor.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                    cursor.style.borderColor = '#8db5ff';
                     cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
                 });
                 el.addEventListener('mouseleave', () => {
                     cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursor.style.borderColor = '#6c9eff';
                     cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
                 });
             });
         }
     }
-
-    // Initialisation
+    
     renderPortfolio();
     setTimeout(initCursor, 100);
     window.copyShareLink = copyShareLink;
